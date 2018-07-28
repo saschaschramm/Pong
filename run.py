@@ -1,6 +1,6 @@
-from env_wrapper import init_env
-from model import Model, PolicyFullyConnected
-from runner import Runner
+from common.env_wrapper import init_env
+from common.model import Model, PolicyFullyConnected
+from common.runner import Runner
 from common.utilities import global_seed
 
 def run():

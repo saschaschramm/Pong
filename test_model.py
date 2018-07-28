@@ -1,9 +1,9 @@
-from env_wrapper import init_env, action_with_index
-from model import Model, PolicyFullyConnected
+from common.env_wrapper import init_env, action_with_index
+from common.model import Model, PolicyFullyConnected
 import time
 
 from common.utilities import global_seed
-from common.stats_recorder import StatsRecorder
+
 
 def test():
     global_seed(0)

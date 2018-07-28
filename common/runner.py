@@ -1,7 +1,7 @@
 import numpy as np
 from common.stats_recorder import StatsRecorder
 from gym.envs.classic_control.rendering import SimpleImageViewer
-from env_wrapper import action_with_index
+from common.env_wrapper import action_with_index
 
 def discount(rewards, dones, discount_rate):
     discounted = []
