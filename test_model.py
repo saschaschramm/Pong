@@ -1,5 +1,5 @@
 from common.env_wrapper import init_env, action_with_index
-from common.model import Model, PolicyFullyConnected
+from reinforce.model import Model, PolicyFullyConnected
 import time
 
 from common.utilities import global_seed

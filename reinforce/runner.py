@@ -69,8 +69,8 @@ class Runner():
             batch_dones.append(done)
 
             if len(batch_rewards) == self.batch_size:
-                discounted_reward = discount(batch_rewards, batch_dones, self.discount_rate)
-                self.model.train(batch_observations, discounted_reward, batch_actions)
+                discounted_rewards = discount(batch_rewards, batch_dones, self.discount_rate)
+                self.model.train(batch_observations, discounted_rewards, batch_actions)
                 batch_observations = []
                 batch_rewards = []
                 batch_actions = []
