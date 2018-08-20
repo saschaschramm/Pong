@@ -15,7 +15,8 @@ def plot(x, y, left_limit, right_limit, bottom_limit, top_limit, save, filename)
     axes.set_ylim(bottom=bottom_limit, top=top_limit)
 
     if save:
-        path = os.path.join(".", "logs", "summary_{}.png".format(filename))
+        path = os.path.join("..", "logs", "summary_{}.png".format(filename))
+        print(path)
         pyplot.savefig(path)
     else:
         pyplot.show()

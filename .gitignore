@@ -1,4 +1,5 @@
 .idea
+tests/
 logs/
 saver/
 __pycache__/

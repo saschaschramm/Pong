@@ -1,13 +1,13 @@
 from common.env_wrapper import init_env
-from reinforce.model import Model, PolicyFullyConnected
-from reinforce.runner import Runner
+from reinforce_fc.model import Model, PolicyFullyConnected
+from reinforce_fc.runner import Runner
 from common.utilities import global_seed
 
 def run():
     global_seed(0)
     env = init_env()
 
-    dir = "Reinforce"
+    dir = "reinforce_fc"
 
     model = Model(
         policy=PolicyFullyConnected,

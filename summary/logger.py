@@ -23,7 +23,7 @@ class SummaryReader:
 
     def __init__(self, logdir):
         self.filename = logdir
-        self.path = os.path.join("logs", logdir)
+        self.path = os.path.join("..", "logs", logdir)
 
     def read(self):
         file_list = os.listdir(self.path)
@@ -41,6 +41,8 @@ class SummaryReader:
 
     def plot(self, left_limit, right_limit, bottom_limit, top_limit, save=False):
         x, y = self.read()
+
+        print(self.filename)
 
         matplot.plot(x, y,
                      left_limit=left_limit,

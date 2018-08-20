@@ -83,7 +83,7 @@ class BlackWhiteEnv(GymWrapper):
         player = (image == 92) * 1
         ball = (image == 236) * 1
         enemy = (image == 213) * 1
-        return player + ball + enemy
+        return (player + ball + enemy).reshape(80, 80, 1)
 
     def reset(self):
         return self.preprocess(self.env.reset())
