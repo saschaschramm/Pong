@@ -35,6 +35,7 @@ class Model():
                                    axis=1)
 
         self.loss = tf.reduce_mean(self.rewards * log_probs)
+
         self.action = sample(self.predict_model.probs)
         self.optimize = tf.train.RMSPropOptimizer(learning_rate=2e-4, decay=0.99).minimize(self.loss)
 
@@ -53,6 +54,7 @@ class Model():
         return loss
 
     def predict_action(self, observations, states, masks):
+
         feed_dict = {self.predict_model.inputs: observations,
                      self.predict_model.states: states,
                      self.predict_model.masks: masks

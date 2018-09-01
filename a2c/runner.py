@@ -57,6 +57,8 @@ class Runner():
         batch_dones = []
         batch_values = []
 
+        print("self.observations", self.observation.shape)
+
         for t in range(self.timesteps+1):
             action_index, value = self.model.predict([self.observation])
             batch_observations.append(self.observation)
@@ -64,7 +66,9 @@ class Runner():
 
             batch_values.append(value)
 
-            self.observation, reward, done, info = self.env.step(action)
+            self.observation, reward, done = self.env.step(action)
+
+
             self.stats_recorder.after_step(reward=reward, done=done, t=t)
 
             batch_rewards.append(reward)

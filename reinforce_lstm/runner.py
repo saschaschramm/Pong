@@ -46,10 +46,8 @@ class Runner():
 
             self.states = states
 
-
             if self.done:
                 self.observation = self.env.reset()
-
 
             batch_rewards.append(reward)
         batch_dones.append(self.done)

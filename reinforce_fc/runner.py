@@ -46,12 +46,14 @@ class Runner():
         batch_actions = []
         batch_dones = []
 
+        print("self.observation ", np.asarray(self.observation).shape)
+
         for t in range(self.timesteps+1):
             action_index = self.model.predict_action([self.observation])[0]
             batch_observations.append(self.observation)
             action = action_with_index(action_index)
 
-            self.observation, reward, done, info = self.env.step(action)
+            self.observation, reward, done = self.env.step(action)
             self.stats_recorder.after_step(reward=reward, done=done, t=t)
 
             batch_rewards.append(reward)
@@ -61,7 +63,6 @@ class Runner():
             if len(batch_rewards) == self.batch_size:
                 discounted_rewards = discount(batch_rewards, batch_dones, self.discount_rate)
 
-                print("batch_observations.shape ", np.asarray(batch_observations).shape)
                 self.model.train(batch_observations, discounted_rewards, batch_actions)
                 batch_observations = []
                 batch_rewards = []
