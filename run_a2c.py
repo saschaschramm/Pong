@@ -1,11 +1,11 @@
-from common.env_wrapper import init_env
+from common.env_wrapper import init_environment
 from a2c.model import Model, PolicyFullyConnected
 from a2c.runner import Runner
 from common.utilities import global_seed
 
 def run():
     global_seed(0)
-    env = init_env()
+    env = init_environment()
 
     dir = "a2c"
 

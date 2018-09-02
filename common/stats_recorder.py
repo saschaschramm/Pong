@@ -18,7 +18,6 @@ class StatsRecorder:
 
     def print_score(self, t):
         end_time = time.time()
-
         if t == 0:
             elapsed_time = 0
         else:

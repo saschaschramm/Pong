@@ -1,6 +1,5 @@
-import gym
 import numpy as np
-from collections import deque
+import gym
 
 def action_with_index(index):
     if index == 0:
@@ -10,84 +9,73 @@ def action_with_index(index):
     else:
         NotImplementedError
 
-def init_env():
-    env = gym.make('PongNoFrameskip-v4')
-    env.seed(0)
-    env = MaxMergeSkipEnv(env, skip=4)
-    env = FireResetEnv(env)
-    env = BlackWhiteEnv(env)
-    return env
+def init_environment():
+    environment = gym.make('PongNoFrameskip-v4')
+    environment.seed(0)
+    environment = EnvWrapper(environment, frame_skip=4)
+    return environment
 
-class GymWrapper(gym.Wrapper):
-    def __init__(self, env):
-        super(GymWrapper, self).__init__(env)
+class EnvWrapper:
 
-    def reset(self):
-        return self.env.reset()
+  def __init__(self, environment, frame_skip):
+    self.environment = environment
+    self.frame_skip = frame_skip
+    self._observation_buffer = [
+        np.empty((80, 80), dtype=np.uint8),
+        np.empty((80, 80), dtype=np.uint8)
+    ]
 
-    def step(self, action):
-        return self.env.step(action)
+  @property
+  def observation_space(self):
+    return (80, 80)
 
-    def render(self):
-        return self.env.render()
+  @property
+  def action_space(self):
+    return 2
 
-class MaxMergeSkipEnv(GymWrapper):
-    def __init__(self, env, skip=4):
-        GymWrapper.__init__(self, env)
-        self._observation_buffer = deque(maxlen=2)
-        self._skip = skip
+  def reset(self):
+        self.environment.reset()
+        observation, _, terminal, _ = self.environment.step(1)
+        if terminal:
+            self.environment.reset()
+        observation, _, terminal, _ = self.environment.step(2)
+        if terminal:
+            self.environment.reset()
 
-    def step(self, action):
-        total_reward = 0.0
-        done = None
-        combined_info = {}
+        self._observation_buffer[0] = self.preprocess(observation)
+        self._observation_buffer[1].fill(0)
 
-        for _ in range(self._skip):
-            observation, reward, done, info = self.env.step(action)
-            self._observation_buffer.append(observation)
-            total_reward += reward
-            combined_info.update(info)
-            if done:
-                break
+        return self._max_merge()
 
-        max_frame = np.max(self._observation_buffer, axis=0)
-        return max_frame, total_reward, done, combined_info
+  def step(self, action):
+    total_reward = 0.0
 
-    def reset(self):
-        self._observation_buffer.clear()
-        observation = self.env.reset()
-        self._observation_buffer.append(observation)
-        return observation
+    for time_step in range(self.frame_skip):
+      observation, reward, terminal, _ = self.environment.step(action)
+      total_reward += reward
 
-class FireResetEnv(GymWrapper):
-    def __init__(self, env):
-        GymWrapper.__init__(self, env)
+      if terminal:
+        break
+      elif time_step >= self.frame_skip - 2:
+        # 0 < 2
+        # 1 < 2
+        # 2 >= 2 -> observation_buffer[0]
+        # 3 >= 2 -> observation_buffer[1]
+        t = time_step - (self.frame_skip - 2)
+        self._observation_buffer[t] = self.preprocess(observation)
 
-    def reset(self):
-        self.env.reset()
-        observation, _, done, _ = self.env.step(1)
-        if done:
-            self.env.reset()
-        observation, _, done, _ = self.env.step(2)
-        if done:
-            self.env.reset()
-        return observation
+    observation = self._max_merge()
+    return observation, total_reward, terminal
 
-class BlackWhiteEnv(GymWrapper):
-    def __init__(self, env):
-        GymWrapper.__init__(self, env)
+  def preprocess(self, image):
+    image = image[35:195]
+    image = image[::2, ::2, 0]
+    player = (image == 92) * 1
+    ball = (image == 236) * 1
+    enemy = (image == 213) * 1
+    return (player + ball + enemy).reshape(80, 80)
 
-    def preprocess(self, image):
-        image = image[35:195]
-        image = image[::2, ::2, 0]
-        player = (image == 92) * 1
-        ball = (image == 236) * 1
-        enemy = (image == 213) * 1
-        return (player + ball + enemy).reshape(80, 80)
-
-    def reset(self):
-        return self.preprocess(self.env.reset())
-
-    def step(self, action):
-        observation, reward, done, info = self.env.step(action)
-        return self.preprocess(observation), reward, done
+  def _max_merge(self):
+    if self.frame_skip > 1:
+      max_frame = np.max(self._observation_buffer, axis=0)
+    return max_frame

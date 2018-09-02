@@ -1,16 +1,12 @@
 from reinforce_lstm.policies import LstmPolicy
-
-#from reinforce_lstm.policies2 import LstmPolicy
-from reinforce_lstm.frame_stack import FrameStack
-from common.env_wrapper import init_env
+from common.env_wrapper import init_environment
 from common.utilities import global_seed
 from reinforce_lstm.model import Model
 from reinforce_lstm.runner import Runner
 
 def run():
     global_seed(0)
-    env = init_env()
-    #env = FrameStack(env, 4)
+    env = init_environment()
 
     discount_rate = 0.99
     observation_space = (80, 80)
@@ -40,19 +36,3 @@ def run():
         model.train(observations, states, rewards, dones, actions)
 
 run()
-
-"""
-1000 0.0 14.2
-2000 -21.0 7.2
-3000 -21.0 7.0
-4000 -21.0 6.9
-5000 -20.0 7.9
-6000 -20.0 7.9
-7000 -21.0 8.3
-8000 -19.0 7.5
-9000 -20.0 7.1
-10000 -18.0 7.4
-11000 -19.0 7.2
-12000 -21.0 6.9
-13000 -20.0 6.7
-"""
