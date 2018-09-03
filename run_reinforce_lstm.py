@@ -9,15 +9,13 @@ def run():
     env = init_environment()
 
     discount_rate = 0.99
-    observation_space = (80, 80)
-    action_space = 2
     batch_size = 128
 
     dir = "reinforce_lstm"
 
     model = Model(policy=LstmPolicy,
-                  observation_space=observation_space,
-                  action_space=action_space,
+                  observation_space=env.observation_space,
+                  action_space=env.action_space,
                   batch_size=batch_size
                   )
 
@@ -25,7 +23,7 @@ def run():
                     model=model,
                     batch_size=batch_size,
                     discount_rate=discount_rate,
-                    summary_frequency=40000,
+                    summary_frequency=20000,
                     performance_num_episodes=10,
                     summary_log_dir=dir)
 
