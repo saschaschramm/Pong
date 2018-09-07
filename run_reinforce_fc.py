@@ -1,6 +1,6 @@
 from common.env_wrapper import init_environment
-from reinforce_fc.model import Model, PolicyFullyConnected
-from reinforce_fc.runner import Runner
+from models.reinforce_fc.model import Model, PolicyFullyConnected
+from models.reinforce_fc.runner import Runner
 from common.utilities import global_seed
 
 def run():

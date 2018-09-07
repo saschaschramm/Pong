@@ -1,8 +1,8 @@
-from reinforce_lstm.policies import LstmPolicy
+from models.reinforce_lstm.policies import LstmPolicy
 from common.env_wrapper import init_environment
 from common.utilities import global_seed
-from reinforce_lstm.model import Model
-from reinforce_lstm.runner import Runner
+from models.reinforce_lstm.model import Model
+from models.reinforce_lstm.runner import Runner
 
 def run():
     global_seed(0)

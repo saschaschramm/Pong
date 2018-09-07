@@ -2,13 +2,14 @@ import tensorflow as tf
 from tensorboard.backend.event_processing.event_accumulator import EventAccumulator
 from summary import matplot
 import os
+from definitions import ROOT_DIR
 
-tag = "test"
+tag = "score"
 
 class SummaryWriter:
 
     def __init__(self, logdir):
-        path = os.path.join("logs", logdir)
+        path = os.path.join(ROOT_DIR, "logs", logdir)
         self.filewriter = tf.summary.FileWriter(logdir=path, flush_secs=120)
 
     def write(self, value, step):
@@ -23,7 +24,7 @@ class SummaryReader:
 
     def __init__(self, logdir):
         self.filename = logdir
-        self.path = os.path.join("..", "logs", logdir)
+        self.path = os.path.join(ROOT_DIR, "logs", logdir)
 
     def read(self):
         file_list = os.listdir(self.path)
@@ -41,9 +42,6 @@ class SummaryReader:
 
     def plot(self, left_limit, right_limit, bottom_limit, top_limit, save=False):
         x, y = self.read()
-
-        print(self.filename)
-
         matplot.plot(x, y,
                      left_limit=left_limit,
                      right_limit=right_limit,

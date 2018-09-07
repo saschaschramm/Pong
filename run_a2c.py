@@ -1,6 +1,6 @@
 from common.env_wrapper import init_environment
-from a2c.model import Model, PolicyFullyConnected
-from a2c.runner import Runner
+from models.a2c.model import Model, PolicyFullyConnected
+from models.a2c.runner import Runner
 from common.utilities import global_seed
 
 def run():

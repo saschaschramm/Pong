@@ -33,7 +33,6 @@ class Model:
         policy_loss = -tf.reduce_mean(tf.reduce_sum(action_mask * tf.log(self.model.policy + 1e-13), axis = 1) *
                                       self.advantage)
 
-
         value_loss = tf.reduce_mean(tf.squared_difference(self.model.values, self.rewards))
 
         loss = policy_loss + value_loss

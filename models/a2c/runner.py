@@ -63,12 +63,9 @@ class Runner():
             action_index, value = self.model.predict([self.observation])
             batch_observations.append(self.observation)
             action = action_with_index(action_index)
-
             batch_values.append(value)
 
             self.observation, reward, done = self.env.step(action)
-
-
             self.stats_recorder.after_step(reward=reward, done=done, t=t)
 
             batch_rewards.append(reward)
