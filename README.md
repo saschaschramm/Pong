@@ -1,6 +1,6 @@
 # Pong
 ## Environment
-Application of different Reinforcment Learning algorithms on the Atari game Pong.
+Application of different Reinforcement Learning algorithms on the Atari game Pong.
 
 * A2C is a synchronous variant of the A3C algorithm (https://arxiv.org/pdf/1708.05144)
 
