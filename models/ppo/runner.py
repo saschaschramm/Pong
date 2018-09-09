@@ -10,6 +10,8 @@ class Runner:
                  num_steps,
                  advantage_estimator_gamma,
                  advantage_estimator_lambda,
+                 summary_frequency,
+                 performance_num_episodes,
                  summary_log_dir
                  ):
         self.gae_lambda = advantage_estimator_lambda
@@ -24,7 +26,7 @@ class Runner:
         self.model = model
         self.observation = env.reset()
         self.num_steps = num_steps
-        self.done = False
+        self.terminal = False
 
     def estimate_advantage(self, t, terminal, next_value):
         if terminal:
@@ -45,15 +47,15 @@ class Runner:
             actions.append(action_index)
             self.values.append(value)
             log_probs.append(log_prob)
-            terminals.append(self.done)
+            terminals.append(self.terminal)
 
             action = action_with_index(action_index)
-            self.observation, reward, self.done = self.env.step(action)
+            self.observation, reward, self.terminal = self.env.step(action)
 
-            if self.done:
+            if self.terminal:
                 self.observation = self.env.reset()
 
-            self.stats_recorder.after_step(reward, self.done, self.t)
+            self.stats_recorder.after_step(reward, self.terminal, self.t)
             self.t += 1
             self.rewards.append(reward)
 
@@ -66,7 +68,7 @@ class Runner:
         self.advantage_estimation = 0
         for t in reversed(range(self.num_steps)):
             if t == self.num_steps - 1:
-                self.advantage_estimation = self.estimate_advantage(t, self.done, last_value)
+                self.advantage_estimation = self.estimate_advantage(t, self.terminal, last_value)
             else:
                 self.advantage_estimation = self.estimate_advantage(t, terminals[t+1], self.values[t+1])
 

@@ -35,16 +35,14 @@ class Model:
 
     def predict_action(self, inputs):
         actions = self.session.run(self.sampled_actions, feed_dict={self.model.inputs: inputs})
-        return actions
+        return actions[0]
 
     def save(self, id):
-        # variables = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, "model")
         variables = tf.trainable_variables()
         saver = tf.train.Saver(variables)
         saver.save(self.session, "saver/model_{}.ckpt".format(id), write_meta_graph=False)
 
     def load(self, id):
-        # saver = tf.train.Saver(var_list=tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES, scope="model"))
         variables = tf.trainable_variables()
         saver = tf.train.Saver(variables)
         saver.restore(self.session, "saver/model_{}.ckpt".format(id))

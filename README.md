@@ -19,10 +19,29 @@ Application of different Reinforcement Learning algorithms on the Atari game Pon
 ![](images/summary_a2c_2.png)
 
 ### PPO
-![](images/summary_ppo_fc.png)
+![](images/summary_ppo_fc_2.png)
 
 
+## Run
+###  Reinforce Fully Connected
+```shell
+$ python -m run_reinforce_fc
+```
 
+###  Reinforce LSTM
+```shell
+$ python -m run_reinforce_lstm
+```
+
+###  A2C
+```shell
+$ python -m run_a2c
+```
+
+###  PPO
+```shell
+$ python -m run_ppo_fc
+```
 
 
 

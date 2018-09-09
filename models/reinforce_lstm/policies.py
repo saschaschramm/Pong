@@ -38,9 +38,7 @@ class LstmPolicy():
 
         with tf.variable_scope("model", reuse=reuse):
             inputs_reshaped = tf.reshape(self.inputs, [batch_size, height * width])
-
             hidden = tf.layers.dense(inputs=inputs_reshaped, units=256, activation=tf.nn.relu)
-            print("hidden ", hidden)
 
             # (128, 256) -> [256, 256, ... ]
             hidden_sequence = tf.unstack(hidden, axis=0)

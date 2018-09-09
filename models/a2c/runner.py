@@ -65,12 +65,12 @@ class Runner():
             action = action_with_index(action_index)
             batch_values.append(value)
 
-            self.observation, reward, done = self.env.step(action)
-            self.stats_recorder.after_step(reward=reward, done=done, t=t)
+            self.observation, reward, terminal = self.env.step(action)
+            self.stats_recorder.after_step(reward=reward, done=terminal, t=t)
 
             batch_rewards.append(reward)
             batch_actions.append(action_index)
-            batch_dones.append(done)
+            batch_dones.append(terminal)
 
             if len(batch_rewards) == self.num_steps:
 
@@ -88,7 +88,7 @@ class Runner():
                 batch_dones = []
                 batch_values = []
 
-            if done:
+            if terminal:
                 self.observation = self.env.reset()
 
             if t % self.stats_recorder.summary_frequency == 0:
