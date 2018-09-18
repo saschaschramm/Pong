@@ -20,6 +20,9 @@ class Model:
         self.learning_rate = tf.placeholder(tf.float32, [])
         self.clip_range = tf.placeholder(tf.float32, [])
 
+
+        
+
         # Entropy
         self.entropy = -tf.reduce_mean(tf.reduce_sum(self.model_train.probs * tf.log(self.model_train.probs + 1e-13),
                                                      axis=1,
@@ -71,17 +74,16 @@ class Model:
               learning_rate,
               clip_range,
               observations,
-              returns,
+              advantages,
               actions,
               values,
               log_probs):
 
-        advantages = returns - values
-        advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+        normalized_advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
         feed_dict = {self.model_train.observations: observations,
                      self.actions: actions,
-                     self.advantages: advantages,
-                     self.returns: returns,
+                     self.advantages: normalized_advantages,
+                     self.returns: advantages + values,
                      self.learning_rate: learning_rate,
                      self.clip_range: clip_range,
                      self.old_log_probs: log_probs,

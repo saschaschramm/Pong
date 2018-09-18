@@ -3,6 +3,7 @@ from common.stats_recorder import StatsRecorder
 from gym.envs.classic_control.rendering import SimpleImageViewer
 from common.env_wrapper import action_with_index
 
+
 def discount(rewards, dones, discount_rate):
     discounted = []
     total_return = 0
@@ -14,20 +15,19 @@ def discount(rewards, dones, discount_rate):
         discounted.append(total_return)
     return np.asarray(discounted[::-1])
 
-class Runner():
+
+class Runner:
 
     def __init__(self,
                  env,
                  model,
                  num_steps,
-                 timesteps,
                  discount_rate,
                  summary_frequency,
                  performance_num_episodes,
                  summary_log_dir):
         self.env = env
         self.model = model
-        self.timesteps = timesteps
         self.discount_rate = discount_rate
         self.observation = env.reset()
         self.num_steps = num_steps
@@ -49,47 +49,34 @@ class Runner():
             columns.append(rows)
         self.viewer.imshow(np.asarray(columns, dtype=np.uint8))
 
-
     def run(self):
-        batch_observations = []
-        batch_rewards = []
-        batch_actions = []
-        batch_dones = []
-        batch_values = []
+        observations = []
+        rewards = []
+        actions = []
+        terminals = []
+        values = []
 
-        print("self.observations", self.observation.shape)
-
-        for t in range(self.timesteps+1):
+        for _ in range(self.num_steps):
             action_index, value = self.model.predict([self.observation])
-            batch_observations.append(self.observation)
+            observations.append(self.observation)
             action = action_with_index(action_index)
-            batch_values.append(value)
+            values.append(value)
 
             self.observation, reward, terminal = self.env.step(action)
-            self.stats_recorder.after_step(reward=reward, done=terminal, t=t)
+            self.stats_recorder.after_step(reward=reward, terminal=terminal)
 
-            batch_rewards.append(reward)
-            batch_actions.append(action_index)
-            batch_dones.append(terminal)
-
-            if len(batch_rewards) == self.num_steps:
-
-                if batch_dones[-1] == 0:
-                    next_value = self.model.predict_value([self.observation])[0]
-                    discounted_rewards = discount(batch_rewards + [next_value], batch_dones + [False],
-                                                  self.discount_rate)[:-1]
-                else:
-                    discounted_rewards = discount(batch_rewards, batch_dones, self.discount_rate)
-
-                self.model.train(batch_observations, discounted_rewards, batch_actions, batch_values)
-                batch_observations = []
-                batch_rewards = []
-                batch_actions = []
-                batch_dones = []
-                batch_values = []
+            rewards.append(reward)
+            actions.append(action_index)
+            terminals.append(terminal)
 
             if terminal:
                 self.observation = self.env.reset()
 
-            if t % self.stats_recorder.summary_frequency == 0:
-                self.model.save(0)
+        if terminals[-1] == 0:
+            next_value = self.model.predict_value([self.observation])[0]
+            discounted_rewards = discount(rewards + [next_value], terminals + [False],
+                                          self.discount_rate)[:-1]
+        else:
+            discounted_rewards = discount(rewards, terminals, self.discount_rate)
+
+        self.model.train(observations, discounted_rewards, actions, values)

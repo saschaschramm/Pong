@@ -47,7 +47,7 @@ def main():
 
     for _ in range(0, (args.total_timesteps // args.num_steps) + 1):
         assert args.num_steps % args.num_batches == 0
-        observations, returns, masks, actions, values, log_probs = runner.run()
+        observations, advantages, masks, actions, values, log_probs = runner.run()
         indexes = np.arange(args.num_steps)  # [0,1,2 ..., 127]
 
         for _ in range(args.num_training_epochs):
@@ -63,7 +63,7 @@ def main():
                 model.train(learning_rate=args.learning_rate,
                             clip_range=args.clip_range,
                             observations=observations[shuffled_indexes],
-                            returns=returns[shuffled_indexes],
+                            advantages=advantages[shuffled_indexes],
                             actions=actions[shuffled_indexes],
                             values=values[shuffled_indexes],
                             log_probs=log_probs[shuffled_indexes]

@@ -1,5 +1,6 @@
 import tensorflow as tf
 
+
 def sample(probs):
     random_uniform = tf.random_uniform(tf.shape(probs))
     scaled_random_uniform = tf.log(random_uniform) / probs
@@ -12,7 +13,8 @@ def sample(logits):
     return tf.argmax(logits - tf.log(-tf.log(u)), axis=-1)
 """
 
-class Model():
+
+class Model:
 
     def __init__(self, policy, observation_space, action_space, batch_size):
         self.session = tf.Session()

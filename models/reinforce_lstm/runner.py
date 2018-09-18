@@ -2,7 +2,8 @@ from common.stats_recorder import StatsRecorder
 from common.utilities import discount
 from common.env_wrapper import action_with_index
 
-class Runner():
+
+class Runner:
 
     def __init__(self,
                  env,
@@ -25,7 +26,6 @@ class Runner():
                                             performance_num_episodes=performance_num_episodes,
                                             summary_log_dir=summary_log_dir,
                                             save=True)
-        self.t = 0
 
     def run(self):
         observations, batch_rewards, actions, terminals = [],[],[],[]
@@ -38,11 +38,7 @@ class Runner():
             actions.append(action_index)
             terminals.append(self.terminal)
             self.observation, reward, self.terminal = self.env.step(action)
-
-            self.stats_recorder.after_step(reward=reward,
-                                           done=self.terminal,
-                                           t=self.t)
-            self.t += 1
+            self.stats_recorder.after_step(reward=reward, terminal=self.terminal)
 
             if self.terminal:
                 self.observation = self.env.reset()

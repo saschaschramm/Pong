@@ -1,6 +1,7 @@
 import tensorflow as tf
 
-class PolicyFullyConnected():
+
+class PolicyFullyConnected:
     def __init__(self, observation_space, action_space):
         height, width = observation_space
         self.inputs = tf.placeholder(tf.float32, (None, height, width))
@@ -9,10 +10,12 @@ class PolicyFullyConnected():
         logits_policy = tf.layers.dense(inputs=hidden, units=action_space, activation=None)
         self.policy = tf.nn.softmax(logits_policy)
 
+
 def sample(probs):
     random_uniform = tf.random_uniform(tf.shape(probs))
     scaled_random_uniform = tf.log(random_uniform) / probs
     return tf.argmax(scaled_random_uniform, axis=1)
+
 
 class Model:
     def __init__(self, policy, observation_space, action_space, learning_rate):

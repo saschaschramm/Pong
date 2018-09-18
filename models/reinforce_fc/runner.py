@@ -4,7 +4,8 @@ from gym.envs.classic_control.rendering import SimpleImageViewer
 from common.env_wrapper import action_with_index
 from common.utilities import discount
 
-class Runner():
+
+class Runner:
 
     def __init__(self,
                  env,
@@ -39,7 +40,6 @@ class Runner():
             columns.append(rows)
         self.viewer.imshow(np.asarray(columns, dtype=np.uint8))
 
-
     def run(self):
         observations = []
         rewards = []
@@ -52,7 +52,7 @@ class Runner():
             action = action_with_index(action_index)
 
             self.observation, reward, terminal = self.env.step(action)
-            self.stats_recorder.after_step(reward=reward, done=terminal, t=t)
+            self.stats_recorder.after_step(reward=reward, terminal=terminal)
 
             rewards.append(reward)
             actions.append(action_index)

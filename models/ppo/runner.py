@@ -2,6 +2,7 @@ import numpy as np
 from common.stats_recorder import StatsRecorder
 from common.env_wrapper import action_with_index
 
+
 class Runner:
 
     def __init__(self,
@@ -17,16 +18,18 @@ class Runner:
         self.gae_lambda = advantage_estimator_lambda
         self.gae_gamma = advantage_estimator_gamma
 
-        self.stats_recorder = StatsRecorder(summary_frequency=20000,
-                                            performance_num_episodes=10,
+        self.stats_recorder = StatsRecorder(summary_frequency=summary_frequency,
+                                            performance_num_episodes=performance_num_episodes,
                                             summary_log_dir=summary_log_dir,
                                             save=True)
-        self.t = 0
         self.env = env
         self.model = model
         self.observation = env.reset()
         self.num_steps = num_steps
         self.terminal = False
+        self.rewards = []
+        self.values = []
+        self.advantage_estimation = 0
 
     def estimate_advantage(self, t, terminal, next_value):
         if terminal:
@@ -55,8 +58,7 @@ class Runner:
             if self.terminal:
                 self.observation = self.env.reset()
 
-            self.stats_recorder.after_step(reward, self.terminal, self.t)
-            self.t += 1
+            self.stats_recorder.after_step(reward, self.terminal)
             self.rewards.append(reward)
 
         actions = np.asarray(actions)
@@ -73,6 +75,5 @@ class Runner:
                 self.advantage_estimation = self.estimate_advantage(t, terminals[t+1], self.values[t+1])
 
             advantage_estimations[t] = self.advantage_estimation
-        returns = advantage_estimations + self.values
 
-        return (np.asarray(observations), returns, terminals, actions, self.values, log_probs)
+        return np.asarray(observations), advantage_estimations, terminals, actions, self.values, log_probs

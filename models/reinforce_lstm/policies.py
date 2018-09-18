@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
 
+
 def lstm(input_sequence, mask_sequence, state, units):
     input_weights = tf.get_variable(name="input_weights", shape=[units, units * 4])
     hidden_weights = tf.get_variable(name="hidden_weights", shape=[units, units * 4])
@@ -27,7 +28,8 @@ def lstm(input_sequence, mask_sequence, state, units):
     state = tf.concat(axis=1, values=[cell, hidden])
     return input_sequence, state
 
-class LstmPolicy():
+
+class LstmPolicy:
 
     def __init__(self, observation_space, action_space, batch_size, units, reuse=False):
         height = observation_space[0]
